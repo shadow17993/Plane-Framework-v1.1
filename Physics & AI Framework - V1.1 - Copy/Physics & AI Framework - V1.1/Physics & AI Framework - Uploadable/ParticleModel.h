@@ -72,8 +72,6 @@ public:
 	void setSpinVel(float x, float y, float z) { _spinVelocity = { x, y, z }; }
 	XMFLOAT3 getSpinVel() { return _spinVelocity; }
 
-
-
 	void SetTheta(float theta) { _theta = theta; }
 
 protected:

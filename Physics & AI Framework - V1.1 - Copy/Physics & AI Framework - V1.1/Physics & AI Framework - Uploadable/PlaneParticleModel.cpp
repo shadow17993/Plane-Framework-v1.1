@@ -3,11 +3,13 @@
 
 PlaneParticleModel::PlaneParticleModel(Transform* transform, float mass) : ParticleModel(transform, mass)
 {
-	_thrust = { 0.0f, 0.0f, 0.0f };
-	_engineSpeed = 0.0f;
-	_wheelRadius = 10.0f;
+	_thrust = 0.0f;
+	_wingLift = 0.0f;
+	_yawForce = 0.0f;
 
-	_engineSpeedLimit = 2.0f;
+	_engineSpeed = 0.0f;
+
+	_engineSpeedLimit = 3wwwwww.0f;
 
 	_planeVelocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 }
@@ -18,23 +20,23 @@ PlaneParticleModel::~PlaneParticleModel()
 
 void PlaneParticleModel::AddEngineSpeed(float engineSpeed)
 {
-	_thrust.z += engineSpeed;
+	_thrust += engineSpeed;
 	TruncateSpeed();
 }
 
 void PlaneParticleModel::TruncateSpeed()
 {
-	if (_thrust.z > _engineSpeedLimit)
+	if (_thrust > _engineSpeedLimit)
 	{
-		_thrust.z = _engineSpeedLimit;
+		_thrust = _engineSpeedLimit;
 	}
 }
 
 void PlaneParticleModel::CalculateVelocity()
 {
-	_planeVelocity.x = _planeDirection.x * _thrust.x;
-	_planeVelocity.y = _planeDirection.y * _thrust.y;
-	_planeVelocity.z = _planeDirection.z * _thrust.z;
+	_planeVelocity.x = _planeDirection.x * (_yawForce * _thrust);
+	_planeVelocity.y = _planeDirection.y * ((_wingLift / 2) * _thrust);
+	_planeVelocity.z = _planeDirection.z * _thrust;
 }
 
 void PlaneParticleModel::Update(float t)

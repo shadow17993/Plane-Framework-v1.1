@@ -306,75 +306,7 @@ void Application::InitPlaneObjects()
 
 	GameObject* planeBody = new GameObject("Plane", appearance, transform, particleModel);
 
-	// Plane Tyre Front Right
-	Geometry carTyreFrontRGeometry = OBJLoader::Load("Objects/Plane Objects/carTyreFrontR.obj", _pd3dDevice);
-
-	appearance = new Appearance(carTyreFrontRGeometry, shinyMaterial);
-	appearance->SetTextureRV(_pCarTex);
-
-	transform = new Transform();
-	transform->SetScale(0.1f,0.1f,0.1f);
-	transform->SetPosition(3.75f*5, 1.8f*5, 4.8f*5);
-
-	particleModel = new PlaneParticleModel(transform, 1.0f);
-
-	GameObject* carTyreFrontR = new GameObject("Car Tyre", appearance, transform, particleModel);
-
-	// Car Tyre Front Left
-	Geometry carTyreFrontLGeometry = OBJLoader::Load("Objects/Plane Objects/carTyreFrontL.obj", _pd3dDevice);
-
-	appearance = new Appearance(carTyreFrontLGeometry, shinyMaterial);
-	appearance->SetTextureRV(_pCarTex);
-
-	transform = new Transform();
-	transform->SetScale(0.1f, 0.1f, 0.1f);
-	transform->SetPosition(-3.75f*2, 1.8f*2, 4.8f*2);
-
-	particleModel = new PlaneParticleModel(transform, 1.0f);
-
-	GameObject* carTyreFrontL = new GameObject("Car Tyre", appearance, transform, particleModel);
-
-	// Car Tyre Back Right
-	Geometry carTyreBackRGeometry = OBJLoader::Load("Objects/Plane Objects/carTyreBackR.obj", _pd3dDevice);
-
-	appearance = new Appearance(carTyreBackRGeometry, shinyMaterial);
-	appearance->SetTextureRV(_pCarTex);
-
-	transform = new Transform();
-	transform->SetScale(0.1f, 0.1f, 0.1f);
-	transform->SetPosition(-3.5f*2, 1.8f*2, -8.8f*2);
-
-	particleModel = new PlaneParticleModel(transform, 1.0f);
-
-	GameObject* carTyreBackR = new GameObject("Car Tyre", appearance, transform, particleModel);
-
-	// Car Tyre Back Left
-	Geometry carTyreBackLGeometry = OBJLoader::Load("Objects/Plane Objects/carTyreBackL.obj", _pd3dDevice);
-
-	appearance = new Appearance(carTyreBackLGeometry, shinyMaterial);
-	appearance->SetTextureRV(_pCarTex);
-
-	transform = new Transform();
-	transform->SetScale(0.1f, 0.1f, 0.1f);
-	transform->SetPosition(3.5*2, 1.8f*2, -8.8f*2);
-
-	particleModel = new PlaneParticleModel(transform, 1.0f);
-
-	GameObject* carTyreBackL = new GameObject("Car Tyre", appearance, transform, particleModel);
-
-	// Add Wheels to Plane Scene Graph
-	vector < GameObject* > planeWheels;
-	planeWheels.push_back(carTyreFrontR);
-	planeWheels.push_back(carTyreFrontL);
-	planeWheels.push_back(carTyreBackR);
-	planeWheels.push_back(carTyreBackL);
-
-	planeBody->AddChild(carTyreFrontR);
-	planeBody->AddChild(carTyreFrontL);
-	planeBody->AddChild(carTyreBackR);
-	planeBody->AddChild(carTyreBackL);
-
-	myPlane = new Plane(planeBody, planeWheels);
+	myPlane = new Plane(planeBody);
 }
 
 

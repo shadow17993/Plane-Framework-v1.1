@@ -6,7 +6,7 @@
 class Plane
 {
 public:
-	Plane(GameObject* _planeBody, vector < GameObject* > _planeWheels);
+	Plane(GameObject* _planeBody);
 	~Plane();
 
 	virtual void Update(float t);
@@ -17,7 +17,6 @@ public:
 
 	// Get Plane Body and Wheels
 	GameObject* GetPlaneBody() const { return planeBody; };
-	vector< GameObject* > GetPlaneWheels() const { planeWheels; };
 
 	// Get/Set Plane Position
 	XMFLOAT3 GetPlanePosition() const { return planePos; };
@@ -54,7 +53,6 @@ public:
 private:
 	// Plane Object
 	GameObject* planeBody;
-	vector < GameObject* > planeWheels;
 
 	// Plane Properties
 	XMFLOAT3 planePos;

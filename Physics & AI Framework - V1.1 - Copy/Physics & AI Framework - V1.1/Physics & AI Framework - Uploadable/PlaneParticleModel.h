@@ -34,18 +34,26 @@ public:
 	float GetEngineSpeedLimit() const { return _engineSpeedLimit; }
 	void SetEngineSpeedLimit(float engineSpeedLimit) { _engineSpeedLimit = engineSpeedLimit; }
 
-	XMFLOAT3 GetThrust() const { return _thrust; }
-	void SetThrust(XMFLOAT3 thrust) { _thrust = thrust; }
+	// Get/Set Thrust along Z Axis
+	float GetThrust() const { return _thrust; }
+	void SetThrust(float thrust) { _thrust = thrust; }
+
+	// Get/Set Wing Lift along Y Axis
+	float GetWingLift() const { return _wingLift; }
+	void SetWingLift(float wingLift) { _wingLift = wingLift; }
+
+	// Get/Set Yaw Force along X Axis
+	float GetYawForce() const { return _yawForce; }
+	void SetYawForce(float yawForce) { _yawForce = yawForce; }
 
 private:
-	float _wheelRadius;
-	float _wheelSpeed;
-	int	_gearRatio;
 
 	float _engineSpeed;
 	float _engineSpeedLimit;
 
-	XMFLOAT3 _thrust;
+	float _thrust;
+	float _wingLift;
+	float _yawForce;
 
 	XMFLOAT3 _planeVelocity;
 	XMFLOAT3 _planeDirection;

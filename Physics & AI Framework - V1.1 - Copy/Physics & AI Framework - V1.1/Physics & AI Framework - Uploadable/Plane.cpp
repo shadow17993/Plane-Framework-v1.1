@@ -1,10 +1,9 @@
 #include "Plane.h"
 #include <iostream>
 
-Plane::Plane(GameObject* _planeBody, vector < GameObject* > _planeWheels)
+Plane::Plane(GameObject* _planeBody)
 {
 	planeBody = _planeBody;
-	planeWheels = _planeWheels;
 
 	planePos = planeBody->GetTransform()->GetPosition();
 
@@ -35,18 +34,18 @@ void Plane::Input()
 	if (GetAsyncKeyState('Z'))
 	{
 		// Set Car Engine Speed
-		planeBodyModel->AddEngineSpeed((engineSpeedAdd));
+		planeBodyModel->AddEngineSpeed(engineSpeedAdd);
 	}
 	else if (GetAsyncKeyState('C'))
 	{
-		if (engineSpeed > 0)
+		if (planeBodyModel->GetThrust() > 0)
 		{
-			planeBodyModel->AddEngineSpeed(-engineSpeedAdd * 2.0f);
+			planeBodyModel->SetThrust(planeBodyModel->GetThrust() - 0.01f);
 		}
-		else
+		/*else
 		{
-			planeBodyModel->AddEngineSpeed((-engineSpeedAdd / 1.5f));
-		}
+			planeBodyModel->AddEngineSpeed(-engineSpeedAdd / 1.5f);
+		}*/
 	}
 	else
 	{
@@ -67,32 +66,24 @@ void Plane::Input()
 		}
 	}
 
-	// Car Rotation Check
+	// Plane Rotation Check
 	if (GetAsyncKeyState('A'))
 	{
 		planeRotation.z += 0.001f;
 		
-		planeBodyModel->SetThrust(XMFLOAT3{
-			planeBodyModel->GetThrust().x + planeRotation.z,
-			planeBodyModel->GetThrust().y,
-			planeBodyModel->GetThrust().z
-		});
+		planeBodyModel->SetYawForce(planeBodyModel->GetThrust() + planeRotation.z);
 	}
 	else if (GetAsyncKeyState('D'))
 	{
 		planeRotation.z -= 0.001f;
 
-		planeBodyModel->SetThrust(XMFLOAT3{
-			planeBodyModel->GetThrust().x + planeRotation.z,
-			planeBodyModel->GetThrust().y,
-			planeBodyModel->GetThrust().z
-		});
+		planeBodyModel->SetYawForce(planeBodyModel->GetThrust() - planeRotation.z);
 	}
 	else
 	{
 		if (planeRotation.z < 0)
 		{
-			planeRotation.z += 0.02f;
+			planeRotation.z += 0.002f;
 		}
 		else if (planeRotation.z > 0)
 		{
@@ -113,49 +104,72 @@ void Plane::Input()
 	{
 		planeRotation.x += 0.001f;
 
-		planeBodyModel->SetThrust(XMFLOAT3{
-			planeBodyModel->GetThrust().x,
-			planeBodyModel->GetThrust().y + planeRotation.x,
-			planeBodyModel->GetThrust().z
-		});
+		planeBodyModel->SetWingLift(planeBodyModel->GetThrust() + planeRotation.z);
 	}
 	else if (GetAsyncKeyState('S'))
 	{
 		planeRotation.x -= 0.001f;
 
-		planeBodyModel->SetThrust(XMFLOAT3{
-			planeBodyModel->GetThrust().x,
-			planeBodyModel->GetThrust().y + planeRotation.x,
-			planeBodyModel->GetThrust().z
-		});
+		planeBodyModel->SetWingLift(planeBodyModel->GetThrust() - planeRotation.z);
 	}
 	else
 	{
 		if (planeRotation.x < 0)
 		{
-			planeRotation.x += 0.02f;
+			planeRotation.x += 0.0002f;
 		}
 		else if (planeRotation.x > 0)
 		{
-
-			planeRotation.x -= 0.02f;
+			planeRotation.x -= 0.0002f;
 		}
 
-		if (
-			planeRotation.x < 0.01f && planeRotation.x > -0.01f)
+		if (planeRotation.x < 0.01f && planeRotation.x > -0.01f)
 		{
 
 			planeRotation.x = 0;
 		}
 	}
+
+
+	if (GetAsyncKeyState('Q'))
+	{
+		planeRotation.y += 0.001f;
+
+		//planeBodyModel->SetWingLift(planeBodyModel->GetThrust() + planeRotation.y);
+	}
+	else if (GetAsyncKeyState('E'))
+	{
+		planeRotation.y -= 0.001f;
+
+		//planeBodyModel->SetWingLift(planeBodyModel->GetThrust() - planeRotation.y);
+	}
+	/*else
+	{
+		if (planeRotation.y < 0)
+		{
+			planeRotation.y += 0.002f;
+		}
+		else if (planeRotation.x > 0)
+		{
+
+			planeRotation.y -= 0.02f;
+		}
+
+		if (
+			planeRotation.y < 0.01f && planeRotation.y > -0.01f)
+		{
+
+			planeRotation.y = 0;
+		}
+	}*/
 }
 
 void Plane::CalculateForwardVector()
 {
-	planeBody->GetTransform()->GetRotation();
+	//planeBody->GetTransform()->GetRotation();
 
 	planeForwardVector.x = sin((planeRotation.y / 17.425f) * (XM_PI / 180.0f));
-	planeForwardVector.y = 0.0f;
+	planeForwardVector.y = cos((planeRotation.z / 17.425f) * (XM_PI / 180.0f)); // check this
 	planeForwardVector.z = cos((planeRotation.x / 17.425f) * (XM_PI / 180.0f));
 
 	float planeDirectionMag = sqrt((planeForwardVector.x * planeForwardVector.x) + (planeForwardVector.y * planeForwardVector.y) + (planeForwardVector.z * planeForwardVector.z));
@@ -194,11 +208,11 @@ void Plane::Update(float t)
 	if (type == "Plane")
 	{
 		XMFLOAT3 velTemp = planeBody->GetParticleModel()->GetVelocity();
-		XMFLOAT3 carVelTemp = planeBodyModel->GetPlaneVelocity();
+		XMFLOAT3 planeVelTemp = planeBodyModel->GetPlaneVelocity();
 
-		velTemp.x += carVelTemp.x;
-		velTemp.y += carVelTemp.y;
-		velTemp.z += carVelTemp.z;
+		velTemp.x += planeVelTemp.x;
+		velTemp.y += planeVelTemp.y;
+		velTemp.z += planeVelTemp.z;
 
 		planeBodyModel->SetVelocity(velTemp);
 	}
@@ -211,7 +225,6 @@ void Plane::Update(float t)
 		XMFLOAT3 planeVelocity = planeBodyModel->GetPlaneVelocity();
 		planePos = XMFLOAT3((planePos.x + planeVelocity.x), (planePos.y + planeVelocity.y), (planePos.z + planeVelocity.z));
 		planeBody->GetTransform()->SetPosition(planePos);
-
 	}
 
 
@@ -228,10 +241,14 @@ void Plane::Update(float t)
 
 	if (floorPos.y >= planePos.y)
 	{
-		planeBody->GetTransform()->SetPosition(planeBody->GetTransform()->GetPosition().x, 0.0f, planeBody->GetTransform()->GetPosition().z);
+		planeBody->GetTransform()->SetPosition(planeBody->GetTransform()->GetPosition().x, 0.01f, planeBody->GetTransform()->GetPosition().z);
+		planeBody->GetTransform()->SetRotation(0.0f, XMConvertToRadians(180.0f), 0.0f);
 	}
 
 	planeBody->GetTransform()->SetRotation(planeRotation.x, XMConvertToRadians(180.0f) + planeRotation.y * planeRotationSpeed, planeRotation.z);
+
+	planeBodyModel->SetWingLift(planeRotation.x * 2);
+	planeBodyModel->SetYawForce(planeRotation.z * 2);
 
 	// Update Transform
 	planeBody->Update(t);
