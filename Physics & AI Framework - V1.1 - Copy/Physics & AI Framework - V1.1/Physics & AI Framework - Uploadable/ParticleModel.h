@@ -110,6 +110,7 @@ private:
 	// Other
 	static const float _gravity;
 	float _mass;
+	float _weight;
 
 	float _theta;
 };

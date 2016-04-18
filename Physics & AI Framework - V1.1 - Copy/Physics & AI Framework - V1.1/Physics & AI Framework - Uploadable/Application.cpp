@@ -132,11 +132,11 @@ void Application::InitObjects()
 	basicLight.SpecularPower = 20.0f;
 	basicLight.LightVecW = XMFLOAT3(0.0f, 1.0f, -1.0f);
 
-	cubeGeometry.indexBuffer = _pIndexBuffer;
-	cubeGeometry.vertexBuffer = _pVertexBuffer;
-	cubeGeometry.numberOfIndices = 36;
-	cubeGeometry.vertexBufferOffset = 0;
-	cubeGeometry.vertexBufferStride = sizeof(SimpleVertex);
+	sphereGeometry.indexBuffer = _pIndexBuffer;
+	sphereGeometry.vertexBuffer = _pVertexBuffer;
+	sphereGeometry.numberOfIndices = 36;
+	sphereGeometry.vertexBufferOffset = 0;
+	sphereGeometry.vertexBufferStride = sizeof(SimpleVertex);
 
 	// SkyBox Material
 	Material skyBoxMat;
@@ -223,6 +223,23 @@ void Application::InitObjects()
 
 	skyBox = new GameObject("Sky Box", appearance, transform, particleModel);
 
+
+	// Sphere Initialisation
+	sphereGeometry = OBJLoader::Load("Objects/sphere.obj", _pd3dDevice, false);
+	
+	appearance = new Appearance(sphereGeometry, shinyMaterial);
+	appearance->SetTextureRV(_pStoneTex);
+
+	transform = new Transform();
+	transform->SetPosition(0.0f, 0.0f, 50.0f);
+	transform->SetScale(1.0f, 1.0f, 1.0f);
+	transform->SetRotation(XMConvertToRadians(0.0f), 0.0f, 0.0f);
+
+	particleModel = new ParticleModel(transform, 1.0f);
+
+	sphere = new GameObject("Sphere", appearance, transform, particleModel);
+
+
 	// Init Plane collection Objects
 	InitPlaneObjects();
 	
@@ -285,8 +302,6 @@ void Application::InitPlaneObjects()
 	Transform* transform;
 	ParticleModel* particleModel;
 
-	// Plane Objects
-
 	// Plane Body
 	Geometry planeGeometry = OBJLoader::Load("Objects/Plane Objects/Hercules.obj", _pd3dDevice);
 
@@ -308,8 +323,6 @@ void Application::InitPlaneObjects()
 
 	myPlane = new Plane(planeBody);
 }
-
-
 
 
 HRESULT Application::InitShadersAndInputLayout()
@@ -1220,42 +1233,6 @@ void Application::Draw()
 
 	// Draw object
 	planeBody->Draw(_pImmediateContext);
-
-
-	//// ------------ Draw Plane Wheels ------------ //
-
-	//vector < GameObject* > planeWheels = planeBody->GetChildren();
-
-	//for each (GameObject* wheel in planeWheels)
-	//{
-	//	material = wheel->GetAppearance()->GetMaterial();
-
-	//	// Copy material to shader
-	//	cb.surface.AmbientMtrl = material.ambient;
-	//	cb.surface.DiffuseMtrl = material.diffuse;
-	//	cb.surface.SpecularMtrl = material.specular;
-
-	//	// Set world matrix
-	//	cb.World = XMMatrixTranspose(wheel->GetTransform()->GetWorldMatrix());
-
-	//	// Set Wheel texture
-	//	if (wheel->GetAppearance()->HasTexture())
-	//	{
-	//		ID3D11ShaderResourceView* textureRV = wheel->GetAppearance()->GetTextureRV();
-	//		_pImmediateContext->PSSetShaderResources(0, 1, &textureRV);
-	//		cb.HasTexture = 1.0f;
-	//	}
-	//	else
-	//	{
-	//		cb.HasTexture = 0.0f;
-	//	}
-
-	//	// Update constant buffer
-	//	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-
-	//	// Draw object
-	//	wheel->Draw(_pImmediateContext);
-	//}
 
     // Present our back buffer to our front buffer
     _pSwapChain->Present(0, 0);

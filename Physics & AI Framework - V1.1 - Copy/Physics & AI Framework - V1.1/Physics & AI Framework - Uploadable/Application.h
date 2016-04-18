@@ -99,7 +99,7 @@ private:
 	//Plane* aiPlane;
 
 	// Other Objects
-	Geometry cubeGeometry;
+	Geometry sphereGeometry;
 	GameObject* slidingCube;
 	vector< GameObject* > _cubes;
 	vector< GameObject* > bullets;
@@ -108,6 +108,7 @@ private:
 	GameObject* groundPlane;
 	GameObject* mountain;
 	GameObject* skyBox;
+	GameObject* sphere;
 
 	// Waypoints
 	vector < GameObject* > waypoints;

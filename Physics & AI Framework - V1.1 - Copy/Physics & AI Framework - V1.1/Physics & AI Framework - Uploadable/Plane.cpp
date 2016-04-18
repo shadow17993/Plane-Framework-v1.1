@@ -8,7 +8,6 @@ Plane::Plane(GameObject* _planeBody)
 	planePos = planeBody->GetTransform()->GetPosition();
 
 	planeRotation = {0.0f, 0.0f, 0.0f};
-	planeRotationSpeed = 0.001f;
 
 	engineSpeedAdd = 0.01f;
 }
@@ -33,7 +32,7 @@ void Plane::Input()
 
 	if (GetAsyncKeyState('Z'))
 	{
-		// Set Car Engine Speed
+		// Set Plane Speed
 		planeBodyModel->AddEngineSpeed(engineSpeedAdd);
 	}
 	else if (GetAsyncKeyState('C'))
@@ -87,7 +86,6 @@ void Plane::Input()
 		}
 		else if (planeRotation.z > 0)
 		{
-
 			planeRotation.z -= 0.02f;
 		}
 
@@ -241,11 +239,17 @@ void Plane::Update(float t)
 
 	if (floorPos.y >= planePos.y)
 	{
+		planeBodyModel->BaseCollisionCheck(floorPos);
 		planeBody->GetTransform()->SetPosition(planeBody->GetTransform()->GetPosition().x, 0.01f, planeBody->GetTransform()->GetPosition().z);
-		planeBody->GetTransform()->SetRotation(0.0f, XMConvertToRadians(180.0f), 0.0f);
+		/*planeBody->GetTransform()->SetRotation(0.0f, XMConvertToRadians(180.0f), 0.0f);*/
 	}
+	/*else if (floorPos.y = planePos.y)
+	{
+		planeBody->GetTransform()->SetPosition(planeBody->GetTransform()->GetPosition().x, 0.0f, planeBody->GetTransform()->GetPosition().z);
+		planeBody->GetTransform()->SetRotation(0.0f, XMConvertToRadians(180.0f), 0.0f);
+	}*/
 
-	planeBody->GetTransform()->SetRotation(planeRotation.x, XMConvertToRadians(180.0f) + planeRotation.y * planeRotationSpeed, planeRotation.z);
+	planeBody->GetTransform()->SetRotation(planeRotation.x, XMConvertToRadians(180.0f) + planeRotation.y, planeRotation.z);
 
 	planeBodyModel->SetWingLift(planeRotation.x * 2);
 	planeBodyModel->SetYawForce(planeRotation.z * 2);

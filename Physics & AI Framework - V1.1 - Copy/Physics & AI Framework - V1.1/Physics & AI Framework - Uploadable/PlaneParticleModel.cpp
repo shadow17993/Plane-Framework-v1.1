@@ -9,7 +9,7 @@ PlaneParticleModel::PlaneParticleModel(Transform* transform, float mass) : Parti
 
 	_engineSpeed = 0.0f;
 
-	_engineSpeedLimit = 3wwwwww.0f;
+	_engineSpeedLimit = 2.0f;
 
 	_planeVelocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 }
@@ -34,7 +34,7 @@ void PlaneParticleModel::TruncateSpeed()
 
 void PlaneParticleModel::CalculateVelocity()
 {
-	_planeVelocity.x = _planeDirection.x * (_yawForce * _thrust);
+	_planeVelocity.x = _planeDirection.x * ((_yawForce * 2) * _thrust);
 	_planeVelocity.y = _planeDirection.y * ((_wingLift / 2) * _thrust);
 	_planeVelocity.z = _planeDirection.z * _thrust;
 }
