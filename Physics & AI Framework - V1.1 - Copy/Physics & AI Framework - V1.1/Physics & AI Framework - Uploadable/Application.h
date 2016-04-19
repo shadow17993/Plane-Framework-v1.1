@@ -17,6 +17,8 @@
 #include "DDSTextureLoader.h"
 #include "GameObject.h"
 #include "OBJLoader.h"
+#include "ParticleSystem.h"
+#include "Particle.h"
 
 using namespace DirectX;
 
@@ -94,16 +96,12 @@ private:
 	Material noSpecMaterial;
 
 	// Game Objects
-	//GameObject* carBody;
 	Plane* myPlane;
-	//Plane* aiPlane;
 
 	// Other Objects
 	Geometry sphereGeometry;
-	GameObject* slidingCube;
-	vector< GameObject* > _cubes;
-	vector< GameObject* > bullets;
-	int bulletIndex;
+	vector< ParticleSystem* > particleSystems;
+	ParticleSystem* _ps;
 	GameObject* raceTrack;
 	GameObject* groundPlane;
 	GameObject* mountain;
@@ -112,13 +110,6 @@ private:
 
 	// Waypoints
 	vector < GameObject* > waypoints;
-
-	// Car GameObject properties
-	/*XMFLOAT3 carPos;
-
-	float carRotation;
-	float carRotationSpeed;
-	float carWheelRotation;*/
 
 	// Cameras
 	Camera* cameraMain;

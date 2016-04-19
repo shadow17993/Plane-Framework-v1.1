@@ -14,7 +14,7 @@ using namespace std;
 class GameObject
 {
 public:
-	GameObject(string type, Appearance* appearance, Transform* transform, ParticleModel* particleModel);
+	GameObject(string type, Appearance* appearance, Transform* transform, ParticleModel* particleModel, bool isMoving);
 	~GameObject();
 
 	string GetType() const { return _type; };
@@ -26,10 +26,6 @@ public:
 	void Update(float t);
 	void Draw(ID3D11DeviceContext* pImmediateContext);
 
-	// Scene Graph
-	void AddChild(GameObject* child) { children.push_back(child); child->GetTransform()->SetParent(_transform); };
-	vector < GameObject* > GetChildren() { return children; };
-
 private:
 	string _type;
 
@@ -37,6 +33,6 @@ private:
 	Transform* _transform;
 	ParticleModel* _particleModel;
 
-	// Children in Scene Graph
-	vector < GameObject* > children;
+	bool _isMoving;
+
 };

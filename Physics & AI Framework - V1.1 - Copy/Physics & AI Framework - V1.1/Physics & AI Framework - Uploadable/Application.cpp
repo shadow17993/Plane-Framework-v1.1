@@ -132,12 +132,6 @@ void Application::InitObjects()
 	basicLight.SpecularPower = 20.0f;
 	basicLight.LightVecW = XMFLOAT3(0.0f, 1.0f, -1.0f);
 
-	sphereGeometry.indexBuffer = _pIndexBuffer;
-	sphereGeometry.vertexBuffer = _pVertexBuffer;
-	sphereGeometry.numberOfIndices = 36;
-	sphereGeometry.vertexBufferOffset = 0;
-	sphereGeometry.vertexBufferStride = sizeof(SimpleVertex);
-
 	// SkyBox Material
 	Material skyBoxMat;
 	skyBoxMat.ambient = XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
@@ -175,7 +169,7 @@ void Application::InitObjects()
 
 	particleModel = new PlaneParticleModel(transform, 1.0f);
 
-	groundPlane = new GameObject("Ground Plane", appearance, transform, particleModel);
+	groundPlane = new GameObject("Ground Plane", appearance, transform, particleModel, false);
 
 	// Mountains Initialisation
 	Geometry mountainGeometry = OBJLoader::Load("Objects/mountain.obj", _pd3dDevice);
@@ -190,7 +184,7 @@ void Application::InitObjects()
 
 	particleModel = new PlaneParticleModel(transform, 1.0f);
 
-	mountain = new GameObject("Mountain", appearance, transform, particleModel);
+	mountain = new GameObject("Mountain", appearance, transform, particleModel, false);
 
 	// Race Track Initialisaton
 	Geometry raceTrackGeometry = OBJLoader::Load("Objects/raceTrack.obj", _pd3dDevice);
@@ -205,7 +199,7 @@ void Application::InitObjects()
 
 	particleModel = new PlaneParticleModel(transform, 1.0f);
 
-	raceTrack = new GameObject("Race Track", appearance, transform, particleModel);
+	raceTrack = new GameObject("Race Track", appearance, transform, particleModel, false);
 
 
 	// Sky Box Initialisation
@@ -219,32 +213,47 @@ void Application::InitObjects()
 	transform->SetScale(-10000.0f, -10000.0f, -10000.0f);
 	transform->SetRotation(XMConvertToRadians(0.0f), 0.0f, 0.0f);
 
-	particleModel = new PlaneParticleModel(transform, 1.0f);
+	particleModel = new PlaneParticleModel(transform, 1000.0f);
 
-	skyBox = new GameObject("Sky Box", appearance, transform, particleModel);
-
-
-	// Sphere Initialisation
-	sphereGeometry = OBJLoader::Load("Objects/sphere.obj", _pd3dDevice, false);
-	
-	appearance = new Appearance(sphereGeometry, shinyMaterial);
-	appearance->SetTextureRV(_pStoneTex);
-
-	transform = new Transform();
-	transform->SetPosition(0.0f, 0.0f, 50.0f);
-	transform->SetScale(1.0f, 1.0f, 1.0f);
-	transform->SetRotation(XMConvertToRadians(0.0f), 0.0f, 0.0f);
-
-	particleModel = new ParticleModel(transform, 1.0f);
-
-	sphere = new GameObject("Sphere", appearance, transform, particleModel);
-
+	skyBox = new GameObject("Sky Box", appearance, transform, particleModel, false);
 
 	// Init Plane collection Objects
 	InitPlaneObjects();
-	
+
+	XMFLOAT3 planePos = myPlane->GetPlaneBody()->GetTransform()->GetPosition();
+
+
+	// Sphere Initialisation
+	sphereGeometry = OBJLoader::Load("Objects/sphere.obj", _pd3dDevice);
+
+	Appearance* sphereAppearance = new Appearance(sphereGeometry, shinyMaterial);
+	appearance->SetTextureRV(_pStoneTex);
+
+	transform = new Transform();
+	transform->SetPosition(planePos.x, 30.0f, planePos.z + 50.0f);
+	transform->SetScale(10.0f, 10.0f, 10.0f);
+	transform->SetRotation(0.0f, 0.0f, 0.0f);
+
+	particleModel = new ParticleModel(transform, XMFLOAT3{0.0f, 0.0f, 0.0f}, 1.0f, 8.0f);
+
+	sphere = new GameObject("Sphere", appearance, transform, particleModel, true);
+
+
+
+	//// Particle System Initialisation
+	//Transform * psTransform = new Transform(myPlane->GetPlaneBody()->GetTransform(), planePos);
+
+	//sphereAppearance = new Appearance(sphereGeometry, shinyMaterial);
+	//appearance->SetTextureRV(_pStoneTex);
+
+	//_ps = new ParticleSystem(psTransform, { 8.0f, 0.0f, 10.0f }, sphereAppearance);
+/*
+	psTransform = new Transform(myPlane->GetPlaneBody()->GetTransform(), planePos);
+	_ps = new ParticleSystem(psTransform, { -8.0f, 0.0f, 10.0f }, sphereAppearance);
+
+	particleSystems.push_back(_ps);*/
+
 	// Camera
-	XMFLOAT3 planePos = myPlane->GetPlanePosition();
 
 	myPlane->CalculateForwardVector();
 	XMFLOAT3 planeDirection = myPlane->GetForwardVector();
@@ -319,7 +328,7 @@ void Application::InitPlaneObjects()
 	particleModel = new PlaneParticleModel(transform, 1.0f);
 	particleModel->SetCollisionRadius(10.0f);
 
-	GameObject* planeBody = new GameObject("Plane", appearance, transform, particleModel);
+	GameObject* planeBody = new GameObject("Plane", appearance, transform, particleModel, false);
 
 	myPlane = new Plane(planeBody);
 }
@@ -801,25 +810,17 @@ void Application::Cleanup()
 		_camera = nullptr;
 	}
 
-	for (auto gameObject : _cubes)
+	/*for (auto gameObject : _cubes)
 	{
 		if (gameObject)
 		{
 			delete gameObject;
 			gameObject = nullptr;
 		}
-	}
+	}*/
 }
 
 // --------------- Input --------------- //
-
-void Application::MoveForward(int objectNumber)
-{
-	if (_cubes.size() > 0)
-	{
-		_cubes[objectNumber]->GetParticleModel()->Move(0.1f, 0.0f, 0.0f);
-	}
-}
 
 void Application::CameraInput()
 {
@@ -988,30 +989,13 @@ void Application::Update(float t)
 
 	timeSinceStart = (dwTimeCur - dwTimeStart) / 1000.0f;
 
-	// Move gameobject
-	if (GetAsyncKeyState('6'))
-	{
-		MoveForward(0);
-	}
-	else if (GetAsyncKeyState('7'))
-	{
-		MoveForward(1);
-	}
-	else if (GetAsyncKeyState('8'))
-	{
-		MoveForward(2);
-	}
-	else if (GetAsyncKeyState('9'))
-	{
-		MoveForward(3);
-	}
-	else if (GetAsyncKeyState('0'))
-	{
-		MoveForward(4);
-	}
-
 	// Plane Object Updates
 	PlaneUpdate(t);
+
+	if (myPlane->GetPlaneBody()->GetParticleModel()->CollisionCheck(sphere->GetTransform()->GetPosition(), sphere->GetParticleModel()->GetCollisionRadius()))
+	{
+		myPlane->GetPlaneBody()->GetParticleModel()->ResolveCollision(sphere->GetParticleModel());
+	}
 
 	// Update Ground Plane
 	groundPlane->Update(t);
@@ -1026,6 +1010,14 @@ void Application::Update(float t)
 	//skyBox->GetTransform()->SetPosition(object2Pos);
 	skyBox->Update(t);
 
+	//Sphere Update
+	sphere->Update(t);
+
+	//sphere->GetTransform()->SetPosition(sphere->GetTransform()->GetPrevPosition().x, sphere->GetTransform()->GetPrevPosition().y, sphere->GetTransform()->GetPrevPosition().z);
+	sphere->GetParticleModel()->BaseCollisionCheck(XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+	
+	
+		//_ps->Update(t);
 }
 
 // --------------- Draw --------------- //
@@ -1233,6 +1225,76 @@ void Application::Draw()
 
 	// Draw object
 	planeBody->Draw(_pImmediateContext);
+
+
+	// --------------- Draw Sphere ---------------- //
+
+	material = sphere->GetAppearance()->GetMaterial();
+
+	// Copy material to shader
+	cb.surface.AmbientMtrl = material.ambient;
+	cb.surface.DiffuseMtrl = material.diffuse;
+	cb.surface.SpecularMtrl = material.specular;
+
+	// Set world matrix
+	cb.World = XMMatrixTranspose(sphere->GetTransform()->GetWorldMatrix());
+
+	// Set plane texture
+	if (sphere->GetAppearance()->HasTexture())
+	{
+		ID3D11ShaderResourceView* textureRV = sphere->GetAppearance()->GetTextureRV();
+		_pImmediateContext->PSSetShaderResources(0, 1, &textureRV);
+		cb.HasTexture = 1.0f;
+	}
+	else
+	{
+		cb.HasTexture = 0.0f;
+	}
+
+	// Update constant buffer
+	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+
+	// Draw object
+	sphere->Draw(_pImmediateContext);
+
+
+	// --------------- Draw Particles ---------------- //
+	/*for (auto ps : particleSystems)
+	{*/
+		//for (auto particles : _ps->getParticles())
+		//{
+		//	// Get render material
+		//	Material material = particles->GetAppearance()->GetMaterial();
+
+		//	// Copy material to shader
+		//	cb.surface.AmbientMtrl = material.ambient;
+		//	cb.surface.DiffuseMtrl = material.diffuse;
+		//	cb.surface.SpecularMtrl = material.specular;
+
+		//	// Set world matrix
+		//	cb.World = XMMatrixTranspose(particles->GetTransform()->GetWorldMatrix());
+
+		//	// Set texture
+		//	if (particles->GetAppearance()->HasTexture())
+		//	{
+		//		ID3D11ShaderResourceView * textureRV = particles->GetAppearance()->GetTextureRV();
+		//		_pImmediateContext->PSSetShaderResources(0, 1, &textureRV);
+		//		cb.HasTexture = 1.0f;
+		//	}
+		//	else
+		//	{
+		//		cb.HasTexture = 0.0f;
+		//	}
+
+		//	// Update constant buffer
+		//	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+
+		//	// Draw object
+		//	particles->Draw(_pImmediateContext);
+		//}
+	//}
+	
+
 
     // Present our back buffer to our front buffer
     _pSwapChain->Present(0, 0);

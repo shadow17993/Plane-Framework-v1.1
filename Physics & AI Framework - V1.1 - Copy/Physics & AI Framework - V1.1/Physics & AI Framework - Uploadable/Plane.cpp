@@ -37,10 +37,10 @@ void Plane::Input()
 	}
 	else if (GetAsyncKeyState('C'))
 	{
-		if (planeBodyModel->GetThrust() > 0)
-		{
+		//if (planeBodyModel->GetThrust() > 0)
+		//{
 			planeBodyModel->SetThrust(planeBodyModel->GetThrust() - 0.01f);
-		}
+		//}
 		/*else
 		{
 			planeBodyModel->AddEngineSpeed(-engineSpeedAdd / 1.5f);

@@ -28,6 +28,84 @@ ParticleModel::ParticleModel(Transform* transform, float mass)
 	_theta = 90.0f;
 }
 
+ParticleModel::ParticleModel(Transform* transform, float mass, float radius)
+{
+	_transform = transform;
+	_acceleration = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	_velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+	_spinAccel = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	_spinVelocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+	_netForce = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	_slidingForce = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+	_dragFactor = 1.0f;
+	_forceMag = 0.0f;
+	_mass = mass;
+
+	_slidingOn = false;
+
+	_useConstAcc = true;
+	_laminar = true;
+
+	_collisionRadius = radius;
+
+	_theta = 90.0f;
+}
+
+ParticleModel::ParticleModel(Transform* transform, XMFLOAT3 velocity, float mass, float radius)
+{
+	_transform = transform;
+	_acceleration = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	_velocity = velocity;
+
+	_spinAccel = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	_spinVelocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+	_netForce = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	_slidingForce = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+	_dragFactor = 1.0f;
+	_forceMag = 0.0f;
+	_mass = mass;
+
+	_slidingOn = false;
+
+	_useConstAcc = true;
+	_laminar = true;
+
+	_collisionRadius = radius;
+
+	_theta = 90.0f;
+}
+
+ParticleModel::ParticleModel(Transform* transform, XMFLOAT3 velocity, XMFLOAT3 acceleration)
+{
+	_transform = transform;
+	_acceleration = acceleration;
+	_velocity = velocity;
+
+	_spinAccel = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	_spinVelocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+	_netForce = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	_slidingForce = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+	_dragFactor = 1.0f;
+	_forceMag = 0.0f;
+	_mass = 0.0f;
+
+	_slidingOn = false;
+
+	_useConstAcc = true;
+	_laminar = true;
+
+	_collisionRadius = 0.0f;
+
+	_theta = 90.0f;
+}
+
 ParticleModel::~ParticleModel()
 {
 
@@ -301,4 +379,10 @@ void ParticleModel::Update(float t)
 	{
 		MoveConstVel(t);
 	}
+}
+
+void ParticleModel::UpdateParticle(float t)
+{
+	UpdateAccel();
+	MoveConstVel(t);
 }

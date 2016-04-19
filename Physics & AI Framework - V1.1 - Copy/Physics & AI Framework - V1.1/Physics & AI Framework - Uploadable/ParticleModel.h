@@ -12,6 +12,9 @@ class ParticleModel
 {
 public:
 	ParticleModel(Transform* transform, float mass);
+	ParticleModel(Transform* transform, float mass, float radius);
+	ParticleModel(Transform* transform, XMFLOAT3 velocity, float mass, float radius);
+	ParticleModel(Transform* transform, XMFLOAT3 velocity, XMFLOAT3 acceleration);
 	~ParticleModel();
 
 	// --------------- Movement ----------------
@@ -49,6 +52,7 @@ public:
 	void UpdateAccel();
 	void UpdateState();
 	virtual void Update(float t);
+	void UpdateParticle(float t);
 
 	// --------------- Get/Set ------------------ //
 

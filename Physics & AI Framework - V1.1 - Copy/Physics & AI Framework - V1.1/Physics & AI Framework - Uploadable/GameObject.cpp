@@ -1,12 +1,13 @@
 #include "GameObject.h"
 
-GameObject::GameObject(string type, Appearance* appearance, Transform* transform, ParticleModel* particleModel)
+GameObject::GameObject(string type, Appearance* appearance, Transform* transform, ParticleModel* particleModel, bool isMoving)
 {
 	_type = type;
 
 	_appearance = appearance;
 	_particleModel = particleModel;
 	_transform = transform;
+	_isMoving = isMoving;
 }
 
 GameObject::~GameObject()
@@ -17,12 +18,9 @@ void GameObject::Update(float t)
 {
 	_transform->Update(t);
 
-	if (!children.empty())
+	if (_isMoving)
 	{
-		for each(GameObject* child in children)
-		{
-			child->Update(t);
-		}
+		_particleModel->Update(t);
 	}
 }
 
