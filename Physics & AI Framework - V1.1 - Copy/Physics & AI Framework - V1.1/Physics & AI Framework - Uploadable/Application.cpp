@@ -227,7 +227,7 @@ void Application::InitObjects()
 	sphereGeometry = OBJLoader::Load("Objects/sphere.obj", _pd3dDevice);
 
 	Appearance* sphereAppearance = new Appearance(sphereGeometry, shinyMaterial);
-	appearance->SetTextureRV(_pStoneTex);
+	appearance->SetTextureRV(_pTextureRV);
 
 	transform = new Transform();
 	transform->SetPosition(planePos.x, 30.0f, planePos.z + 50.0f);
@@ -994,7 +994,7 @@ void Application::Update(float t)
 
 	if (myPlane->GetPlaneBody()->GetParticleModel()->CollisionCheck(sphere->GetTransform()->GetPosition(), sphere->GetParticleModel()->GetCollisionRadius()))
 	{
-		myPlane->GetPlaneBody()->GetParticleModel()->ResolveCollision(sphere->GetParticleModel());
+		myPlane->GetPlaneBody()->GetParticleModel()->ResolveSphereCollision(sphere->GetParticleModel());
 	}
 
 	// Update Ground Plane

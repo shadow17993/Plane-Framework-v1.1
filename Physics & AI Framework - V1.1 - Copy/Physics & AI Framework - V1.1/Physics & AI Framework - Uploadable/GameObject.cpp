@@ -20,7 +20,14 @@ void GameObject::Update(float t)
 
 	if (_isMoving)
 	{
-		_particleModel->Update(t);
+		if (_type == "Sphere")
+		{
+			_particleModel->UpdateSphere(t);
+		}
+		else
+		{
+			_particleModel->Update(t);
+		}
 	}
 }
 

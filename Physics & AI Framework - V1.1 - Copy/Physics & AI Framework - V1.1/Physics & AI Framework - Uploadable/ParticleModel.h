@@ -45,6 +45,7 @@ public:
 	void BaseCollisionCheck(XMFLOAT3 floorPos);
 	bool CollisionCheck(XMFLOAT3 object2Pos, float object2Radius);
 	void ResolveCollision(ParticleModel* object2);
+	void ResolveSphereCollision(ParticleModel* object2);
 
 	// --------------- Updates ------------------ //
 
@@ -52,6 +53,7 @@ public:
 	void UpdateAccel();
 	void UpdateState();
 	virtual void Update(float t);
+	void UpdateSphere(float t);
 	void UpdateParticle(float t);
 
 	// --------------- Get/Set ------------------ //

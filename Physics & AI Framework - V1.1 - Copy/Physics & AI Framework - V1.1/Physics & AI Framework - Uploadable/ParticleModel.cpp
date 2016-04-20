@@ -333,6 +333,41 @@ void ParticleModel::ResolveCollision(ParticleModel* object2)
 	object2->SetVelocity(object2NewVel);
 }
 
+void ParticleModel::ResolveSphereCollision(ParticleModel* object2)
+{
+	// Resolve Interpenertrations
+	XMFLOAT3 obj1PrevPos = _transform->GetPrevPosition();
+	XMFLOAT3 obj2PrevPos = object2->_transform->GetPrevPosition();
+
+	XMFLOAT3 obj1Pos = _transform->GetPosition();
+	XMFLOAT3 obj2Pos = object2->_transform->GetPosition();
+
+	_transform->SetPosition(obj1PrevPos);
+	object2->_transform->SetPosition(obj2PrevPos);
+
+	// Resulting velocities
+	float object1Mass = _mass;
+	float object2Mass = object2->GetMass();
+
+	XMFLOAT3 object1Vel = _velocity;
+	XMFLOAT3 object2Vel = object2->GetVelocity();
+
+	float cR = 1.0f;
+
+	XMFLOAT3 object1NewVel;
+	object1NewVel.x = (((object1Mass * object1Vel.x) + (object2Mass * object2Vel.x) + (object2Mass * cR * (object2Vel.x - object1Vel.x))) / (object1Mass + object2Mass));
+	object1NewVel.y = (((object1Mass * object1Vel.y) + (object2Mass * object2Vel.y) + (object2Mass * cR * (object2Vel.y - object1Vel.y))) / (object1Mass + object2Mass));
+	object1NewVel.z = (((object1Mass * object1Vel.z) + (object2Mass * object2Vel.z) + (object2Mass * cR * (object2Vel.z - object1Vel.z))) / (object1Mass + object2Mass));
+
+	XMFLOAT3 object2NewVel;
+	object2NewVel.x = (((object2Mass * object2Vel.x) + (object1Mass * object1Vel.x) + (object1Mass * cR * (object1Vel.x - object2Vel.x))) / (object1Mass + object2Mass));
+	object2NewVel.y = (((object2Mass * object2Vel.y) + (object1Mass * object1Vel.y) + (object1Mass * cR * (object1Vel.y - object2Vel.y))) / (object1Mass + object2Mass));
+	object2NewVel.z = (((object2Mass * object2Vel.z) + (object1Mass * object1Vel.z) + (object1Mass * cR * (object1Vel.z - object2Vel.z))) / (object1Mass + object2Mass));
+
+	_velocity = object1NewVel;
+	object2->SetVelocity(object2NewVel);
+}
+
 // --------------------- Update ----------------------- //
 
 void ParticleModel::UpdateAccel()
@@ -370,6 +405,36 @@ void ParticleModel::Update(float t)
 			_slidingForce.z = 0.0f;
 		}
 		
+		DragForce();
+		UpdateState();
+		MoveConstAcc(t);
+		SpinConstVel(t);
+	}
+	else
+	{
+		MoveConstVel(t);
+	}
+}
+
+void ParticleModel::UpdateSphere(float t)
+{
+	
+
+	if (_useConstAcc)
+	{
+		if (_slidingOn)
+		{
+			_spinVelocity.x = _velocity.z * ((_collisionRadius / 17.425) * (XM_PI / 180));
+			_spinVelocity.y = _velocity.x * ((_collisionRadius / 17.425) * (XM_PI / 180));
+			_spinVelocity.z = _velocity.y * ((_collisionRadius / 17.425) * (XM_PI / 180));
+		}
+		else if (!_slidingOn)
+		{
+			_slidingForce.x = 0.0f;
+			_slidingForce.y = _mass * _gravity;
+			_slidingForce.z = 0.0f;
+		}
+
 		DragForce();
 		UpdateState();
 		MoveConstAcc(t);
