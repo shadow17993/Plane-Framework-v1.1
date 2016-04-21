@@ -249,7 +249,7 @@ void Plane::Update(float t)
 		planeBody->GetTransform()->SetRotation(0.0f, XMConvertToRadians(180.0f), 0.0f);
 	}*/
 
-	planeBody->GetTransform()->SetRotation(planeRotation.x, XMConvertToRadians(180.0f) + planeRotation.y, planeRotation.z);
+	planeBody->GetTransform()->SetRotation(planeRotation.x, XMConvertToRadians(180.0f) + (planeRotation.y * planeRotationSpeed), planeRotation.z);
 
 	planeBodyModel->SetWingLift(planeRotation.x * 2);
 	planeBodyModel->SetYawForce(planeRotation.z * 2);

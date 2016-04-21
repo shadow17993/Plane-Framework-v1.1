@@ -101,7 +101,6 @@ private:
 	// Other Objects
 	Geometry sphereGeometry;
 	vector< ParticleSystem* > particleSystems;
-	ParticleSystem* _ps;
 	GameObject* raceTrack;
 	GameObject* groundPlane;
 	GameObject* mountain;
