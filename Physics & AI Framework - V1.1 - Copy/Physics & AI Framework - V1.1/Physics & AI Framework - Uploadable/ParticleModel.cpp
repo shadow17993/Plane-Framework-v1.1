@@ -80,7 +80,7 @@ ParticleModel::ParticleModel(Transform* transform, XMFLOAT3 velocity, float mass
 	_theta = 90.0f;
 }
 
-ParticleModel::ParticleModel(Transform* transform, XMFLOAT3 velocity, XMFLOAT3 acceleration)
+ParticleModel::ParticleModel(Transform* transform, XMFLOAT3 velocity, XMFLOAT3 acceleration, float radius)
 {
 	_transform = transform;
 	_acceleration = acceleration;
@@ -99,6 +99,33 @@ ParticleModel::ParticleModel(Transform* transform, XMFLOAT3 velocity, XMFLOAT3 a
 	_slidingOn = false;
 
 	_useConstAcc = true;
+	_laminar = true;
+
+	_collisionRadius = radius;
+
+	_theta = 90.0f;
+}
+
+ParticleModel::ParticleModel(Transform* transform, XMFLOAT3 spinVelocity, XMFLOAT3 spinAcceleration)
+{
+	_transform = transform;
+	_acceleration = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	_velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+	_spinAccel = spinAcceleration;
+	_spinVelocity = spinVelocity;
+
+	_netForce = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	_slidingForce = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+	_dragFactor = 1.0f;
+	_forceMag = 0.0f;
+	_mass = 1.0f;
+
+	_slidingOn = false;
+
+	_useConstAcc = true;
+	_useSpinConstVel = true;
 	_laminar = true;
 
 	_collisionRadius = 0.0f;
@@ -439,6 +466,18 @@ void ParticleModel::UpdateSphere(float t)
 	else
 	{
 		MoveConstVel(t);
+	}
+}
+
+void ParticleModel::UpdateCube(float t)
+{
+	if (_useSpinConstVel)
+	{
+		SpinConstVel(t);
+	}
+	else
+	{
+		SpinConstAcc(t);
 	}
 }
 

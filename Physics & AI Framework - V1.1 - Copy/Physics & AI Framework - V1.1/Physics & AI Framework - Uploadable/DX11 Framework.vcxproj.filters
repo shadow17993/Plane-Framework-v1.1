@@ -56,6 +56,18 @@
     <ClInclude Include="PlaneParticleModel.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="CubePoint.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Appearance.cpp">
@@ -92,6 +104,18 @@
       <Filter>CPP</Filter>
     </ClCompile>
     <ClCompile Include="PlaneParticleModel.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="CubePoint.cpp">
       <Filter>CPP</Filter>
     </ClCompile>
   </ItemGroup>

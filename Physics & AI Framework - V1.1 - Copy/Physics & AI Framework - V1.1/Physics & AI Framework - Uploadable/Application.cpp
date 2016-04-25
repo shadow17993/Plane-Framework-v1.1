@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "CubePoint.h"
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -109,7 +110,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 	CreateDDSTextureFromFile(_pd3dDevice, L"Resources\\grass.dds", nullptr, &_pGrassTex);
 	CreateDDSTextureFromFile(_pd3dDevice, L"Resources\\mountain.dds", nullptr, &_pMountainTex);
 	CreateDDSTextureFromFile(_pd3dDevice, L"Resources\\floor.dds", nullptr, &_pStoneTex);
-	CreateDDSTextureFromFile(_pd3dDevice, L"Resources\\skyBox.dds", nullptr, &_pSkyTex);
+	CreateDDSTextureFromFile(_pd3dDevice, L"Resources\\skyBox3.dds", nullptr, &_pSkyTex);
 
 	// Setup Camera
 	XMFLOAT3 eye = XMFLOAT3(0.0f, 2.0f, -1.0f);
@@ -217,6 +218,7 @@ void Application::InitObjects()
 
 	skyBox = new GameObject("Sky Box", appearance, transform, particleModel, false);
 
+
 	// Init Plane collection Objects
 	InitPlaneObjects();
 
@@ -230,13 +232,13 @@ void Application::InitObjects()
 	appearance->SetTextureRV(_pTextureRV);
 
 	transform = new Transform();
-	transform->SetPosition(planePos.x, 30.0f, planePos.z + 50.0f);
+	transform->SetPosition(planePos.x + 100, 30.0f, planePos.z + 50.0f);
 	transform->SetScale(10.0f, 10.0f, 10.0f);
 	transform->SetRotation(0.0f, 0.0f, 0.0f);
 
 	particleModel = new ParticleModel(transform, XMFLOAT3{0.0f, 0.0f, 0.0f}, 1.0f, 8.0f);
 
-	sphere = new GameObject("Sphere", appearance, transform, particleModel, true);
+	sphere = new GameObject("Sphere", sphereAppearance, transform, particleModel, true);
 
 
 
@@ -255,8 +257,19 @@ void Application::InitObjects()
 
 	particleSystems.push_back(_ps);
 
-	// Camera
 
+	// Cube Point Initialisation
+	Geometry cubeGeometry = OBJLoader::Load("Objects/cube.obj", _pd3dDevice);
+
+	Transform * cubeTransform = new Transform(myPlane->GetPlaneBody()->GetTransform(), planePos);
+
+	Appearance* cubeAppearance = new Appearance(cubeGeometry, shinyMaterial);
+	cubeAppearance->SetTextureRV(_pStoneTex);
+
+	_cp = new CubePoint(cubeAppearance);
+
+
+	// Camera
 	myPlane->CalculateForwardVector();
 	XMFLOAT3 planeDirection = myPlane->GetForwardVector();
 
@@ -980,17 +993,6 @@ void Application::PlaneUpdate(float t)
 
 void Application::Update(float t)
 {
-    // Update our time
-    static float timeSinceStart = 0.0f;
-    static DWORD dwTimeStart = 0;
-
-    DWORD dwTimeCur = GetTickCount();
-
-    if (dwTimeStart == 0)
-        dwTimeStart = dwTimeCur;
-
-	timeSinceStart = (dwTimeCur - dwTimeStart) / 1000.0f;
-
 	// Plane Object Updates
 	PlaneUpdate(t);
 
@@ -1022,6 +1024,8 @@ void Application::Update(float t)
 	{
 		ps->Update(t);
 	}
+
+	_cp->Update(t);
 }
 
 // --------------- Draw --------------- //
@@ -1296,6 +1300,38 @@ void Application::Draw()
 			// Draw object
 			particles->Draw(_pImmediateContext);
 		}
+	}
+
+	for (auto cubes : _cp->getCubes())
+	{
+		// Get render material
+		Material material = cubes->GetAppearance()->GetMaterial();
+
+		// Copy material to shader
+		cb.surface.AmbientMtrl = material.ambient;
+		cb.surface.DiffuseMtrl = material.diffuse;
+		cb.surface.SpecularMtrl = material.specular;
+
+		// Set world matrix
+		cb.World = XMMatrixTranspose(cubes->GetTransform()->GetWorldMatrix());
+
+		// Set texture
+		if (cubes->GetAppearance()->HasTexture())
+		{
+			ID3D11ShaderResourceView * textureRV = cubes->GetAppearance()->GetTextureRV();
+			_pImmediateContext->PSSetShaderResources(0, 1, &textureRV);
+			cb.HasTexture = 1.0f;
+		}
+		else
+		{
+			cb.HasTexture = 0.0f;
+		}
+
+		// Update constant buffer
+		_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+
+		// Draw object
+		cubes->Draw(_pImmediateContext);
 	}
 	
 

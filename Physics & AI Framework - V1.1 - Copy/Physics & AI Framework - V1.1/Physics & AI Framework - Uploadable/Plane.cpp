@@ -20,7 +20,6 @@ Plane::~Plane()
 void Plane::Input()
 {
 	PlaneParticleModel* planeBodyModel = (PlaneParticleModel*)planeBody->GetParticleModel();
-	float engineSpeed = planeBodyModel->GetEngineSpeed();
 
 	planePos = planeBody->GetTransform()->GetPosition();
 
@@ -131,13 +130,13 @@ void Plane::Input()
 
 	if (GetAsyncKeyState('Q'))
 	{
-		planeRotation.y += 0.001f;
+		planeRotation.y += 0.00001f;
 
 		//planeBodyModel->SetWingLift(planeBodyModel->GetThrust() + planeRotation.y);
 	}
 	else if (GetAsyncKeyState('E'))
 	{
-		planeRotation.y -= 0.001f;
+		planeRotation.y -= 0.00001f;
 
 		//planeBodyModel->SetWingLift(planeBodyModel->GetThrust() - planeRotation.y);
 	}
@@ -164,7 +163,7 @@ void Plane::Input()
 
 void Plane::CalculateForwardVector()
 {
-	//planeBody->GetTransform()->GetRotation();
+	planeRotation = planeBody->GetTransform()->GetRotation();
 
 	planeForwardVector.x = sin((planeRotation.y / 17.425f) * (XM_PI / 180.0f));
 	planeForwardVector.y = cos((planeRotation.z / 17.425f) * (XM_PI / 180.0f)); // check this
@@ -195,8 +194,6 @@ void Plane::CalculateForwardVector()
 
 void Plane::Update(float t)
 {
-	CalculateForwardVector();
-
 	PlaneParticleModel* planeBodyModel = (PlaneParticleModel*)planeBody->GetParticleModel();
 	float engineSpeed = planeBodyModel->GetEngineSpeed();
 
@@ -249,7 +246,7 @@ void Plane::Update(float t)
 		planeBody->GetTransform()->SetRotation(0.0f, XMConvertToRadians(180.0f), 0.0f);
 	}*/
 
-	planeBody->GetTransform()->SetRotation(planeRotation.x, XMConvertToRadians(180.0f) + (planeRotation.y * planeRotationSpeed), planeRotation.z);
+	planeBody->GetTransform()->SetRotation(planeRotation.x, planeRotation.y, planeRotation.z);
 
 	planeBodyModel->SetWingLift(planeRotation.x * 2);
 	planeBodyModel->SetYawForce(planeRotation.z * 2);
@@ -259,6 +256,8 @@ void Plane::Update(float t)
 
 	// Update Particle Model
 	planeBody->GetParticleModel()->Update(t);
+
+	CalculateForwardVector();
 }
 
 void Plane::Draw(ID3D11DeviceContext* _pImmediateContext)

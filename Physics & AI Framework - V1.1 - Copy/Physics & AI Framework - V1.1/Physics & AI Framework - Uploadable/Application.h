@@ -19,6 +19,7 @@
 #include "OBJLoader.h"
 #include "ParticleSystem.h"
 #include "Particle.h"
+#include "CubePoint.h"
 
 using namespace DirectX;
 
@@ -108,7 +109,7 @@ private:
 	GameObject* sphere;
 
 	// Waypoints
-	vector < GameObject* > waypoints;
+	CubePoint* _cp;
 
 	// Cameras
 	Camera* cameraMain;
@@ -143,8 +144,6 @@ private:
 	void PlaneUpdate(float t);
 	void CameraInput();
 	
-	void MoveForward(int objectNumber);
-
 	// Draw Methods
 	void CarDraw(ConstantBuffer* cb, ID3D11DeviceContext* _pImmediateContext);
 	void CubeDraw(ConstantBuffer* cb, ID3D11DeviceContext* _pImmediateContext);

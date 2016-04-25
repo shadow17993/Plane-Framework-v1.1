@@ -15,6 +15,7 @@ public:
 	ParticleModel(Transform* transform, float mass, float radius);
 	ParticleModel(Transform* transform, XMFLOAT3 velocity, float mass, float radius);
 	ParticleModel(Transform* transform, XMFLOAT3 velocity, XMFLOAT3 acceleration);
+	ParticleModel(Transform* transform, XMFLOAT3 spinVelocity, XMFLOAT3 spinAcceleration, float radius);
 	~ParticleModel();
 
 	// --------------- Movement ----------------
@@ -54,6 +55,7 @@ public:
 	void UpdateState();
 	virtual void Update(float t);
 	void UpdateSphere(float t);
+	void UpdateCube(float t);
 	void UpdateParticle(float t);
 
 	// --------------- Get/Set ------------------ //
@@ -92,6 +94,7 @@ private:
 	
 
 	bool _useConstAcc;
+	bool _useSpinConstVel;
 
 	// Rotation
 	XMFLOAT3 _spinAccel;

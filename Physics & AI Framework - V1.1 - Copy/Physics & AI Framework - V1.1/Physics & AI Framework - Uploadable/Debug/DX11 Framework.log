@@ -1,5 +1,45 @@
-﻿Build started 19/04/2016 21:47:53.
+﻿Build started 25/04/2016 10:04:40.
+     1>Project "C:\Users\James\Documents\GitHub\Plane-Framework-v1.1\Physics & AI Framework - V1.1 - Copy\Physics & AI Framework - V1.1\Physics & AI Framework - Uploadable\DX11 Framework.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\Users\James\Documents\GitHub\Plane-Framework-v1.1\Physics & AI Framework - V1.1 - Copy\Physics & AI Framework - V1.1\Physics & AI Framework - Uploadable\DirectXTK\Inc" /ZI /nologo /W4 /WX- /Od /Oi /Oy- /D WIN32 /D _DEBUG /D DEBUG /D PROFILE /D _WINDOWS /D _WIN32_WINNT=0x0600 /D _UNICODE /D UNICODE /Gm- /EHsc /RTC1 /MDd /GS /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /openmp- /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt  Application.cpp CarParticleModel.cpp Cube.cpp CubePoint.cpp GameObject.cpp Main.cpp OBJLoader.cpp Particle.cpp ParticleModel.cpp ParticleSystem.cpp Plane.cpp PlaneParticleModel.cpp
+         Application.cpp
+     1>c:\users\james\documents\github\plane-framework-v1.1\physics & ai framework - v1.1 - copy\physics & ai framework - v1.1\physics & ai framework - uploadable\application.cpp(264): warning C4189: 'cubeTransform' : local variable is initialized but not referenced
+         CarParticleModel.cpp
+         Cube.cpp
+         CubePoint.cpp
+     1>c:\users\james\documents\github\plane-framework-v1.1\physics & ai framework - v1.1 - copy\physics & ai framework - v1.1\physics & ai framework - uploadable\cubepoint.cpp(26): warning C4018: '<' : signed/unsigned mismatch
+         GameObject.cpp
+         Main.cpp
+         OBJLoader.cpp
+         Particle.cpp
+         ParticleModel.cpp
+         ParticleSystem.cpp
+     1>c:\users\james\documents\github\plane-framework-v1.1\physics & ai framework - v1.1 - copy\physics & ai framework - v1.1\physics & ai framework - uploadable\particlesystem.cpp(35): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\james\documents\github\plane-framework-v1.1\physics & ai framework - v1.1 - copy\physics & ai framework - v1.1\physics & ai framework - uploadable\particlesystem.cpp(47): warning C4100: 'pImmediateContext' : unreferenced formal parameter
+         Plane.cpp
+         PlaneParticleModel.cpp
+         Generating Code...
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\James\Documents\GitHub\Plane-Framework-v1.1\Physics & AI Framework - V1.1 - Copy\Physics & AI Framework - V1.1\Physics & AI Framework - Uploadable\Debug\DX11 Framework.exe" /INCREMENTAL /NOLOGO d2d1.lib d3d11.lib d3dcompiler.lib dxguid.lib winmm.lib comctl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"C:\Users\James\Documents\GitHub\Plane-Framework-v1.1\Physics & AI Framework - V1.1 - Copy\Physics & AI Framework - V1.1\Physics & AI Framework - Uploadable\Debug\DX11 Framework.pdb" /SUBSYSTEM:WINDOWS /LARGEADDRESSAWARE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\James\Documents\GitHub\Plane-Framework-v1.1\Physics & AI Framework - V1.1 - Copy\Physics & AI Framework - V1.1\Physics & AI Framework - Uploadable\Debug\DX11 Framework.lib" /MACHINE:X86 /SAFESEH  "Debug\DX11 Framework.res"
+         Debug\Appearance.obj
+         Debug\Application.obj
+         Debug\Camera.obj
+         Debug\Cube.obj
+         Debug\CubePoint.obj
+         Debug\Particle.obj
+         Debug\ParticleSystem.obj
+         Debug\Plane.obj
+         Debug\CarParticleModel.obj
+         Debug\DDSTextureLoader.obj
+         Debug\Main.obj
+         Debug\GameObject.obj
+         Debug\OBJLoader.obj
+         Debug\ParticleModel.obj
+         Debug\PlaneParticleModel.obj
+         Debug\Transform.obj
+         DX11 Framework.vcxproj -> C:\Users\James\Documents\GitHub\Plane-Framework-v1.1\Physics & AI Framework - V1.1 - Copy\Physics & AI Framework - V1.1\Physics & AI Framework - Uploadable\Debug\DX11 Framework.exe
+     1>Done Building Project "C:\Users\James\Documents\GitHub\Plane-Framework-v1.1\Physics & AI Framework - V1.1 - Copy\Physics & AI Framework - V1.1\Physics & AI Framework - Uploadable\DX11 Framework.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.12
+Time Elapsed 00:00:26.88
