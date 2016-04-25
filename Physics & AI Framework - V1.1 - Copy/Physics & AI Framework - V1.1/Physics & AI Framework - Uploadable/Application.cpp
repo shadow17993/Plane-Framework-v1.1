@@ -242,20 +242,18 @@ void Application::InitObjects()
 
 
 
-	// Particle System Initialisation
-	Transform * psTransform = new Transform(myPlane->GetPlaneBody()->GetTransform(), planePos);
+	//// Particle System Initialisation
+	//Transform * psTransform = new Transform(myPlane->GetPlaneBody()->GetTransform(), planePos);
 
-	sphereAppearance = new Appearance(sphereGeometry, shinyMaterial);
-	appearance->SetTextureRV(_pStoneTex);
+	//sphereAppearance = new Appearance(sphereGeometry, shinyMaterial);
+	//appearance->SetTextureRV(_pStoneTex);
 
-	ParticleSystem*_ps = new ParticleSystem(psTransform, { 8.0f, 0.0f, 10.0f }, sphereAppearance);
-
-	particleSystems.push_back(_ps);
-
+	//_ps = new ParticleSystem(psTransform, { 8.0f, 0.0f, 10.0f }, sphereAppearance);
+/*
 	psTransform = new Transform(myPlane->GetPlaneBody()->GetTransform(), planePos);
 	_ps = new ParticleSystem(psTransform, { -8.0f, 0.0f, 10.0f }, sphereAppearance);
 
-	particleSystems.push_back(_ps);
+	particleSystems.push_back(_ps);*/
 
 
 	// Cube Point Initialisation
@@ -1020,12 +1018,17 @@ void Application::Update(float t)
 	//sphere->GetTransform()->SetPosition(sphere->GetTransform()->GetPrevPosition().x, sphere->GetTransform()->GetPrevPosition().y, sphere->GetTransform()->GetPrevPosition().z);
 	sphere->GetParticleModel()->BaseCollisionCheck(XMFLOAT3{ 0.0f, 0.0f, 0.0f });
 	
+<<<<<<< HEAD
 	for (auto ps : particleSystems)
 	{
 		ps->Update(t);
 	}
 
 	_cp->Update(t);
+=======
+	
+		//_ps->Update(t);
+>>>>>>> parent of efe429b... Fixed particle system and Spin velocity
 }
 
 // --------------- Draw --------------- //
@@ -1267,6 +1270,7 @@ void Application::Draw()
 
 
 	// --------------- Draw Particles ---------------- //
+<<<<<<< HEAD
 	for (auto ps : particleSystems)
 	{
 		for (auto particles : ps->getParticles())
@@ -1333,6 +1337,42 @@ void Application::Draw()
 		// Draw object
 		cubes->Draw(_pImmediateContext);
 	}
+=======
+	/*for (auto ps : particleSystems)
+	{*/
+		//for (auto particles : _ps->getParticles())
+		//{
+		//	// Get render material
+		//	Material material = particles->GetAppearance()->GetMaterial();
+
+		//	// Copy material to shader
+		//	cb.surface.AmbientMtrl = material.ambient;
+		//	cb.surface.DiffuseMtrl = material.diffuse;
+		//	cb.surface.SpecularMtrl = material.specular;
+
+		//	// Set world matrix
+		//	cb.World = XMMatrixTranspose(particles->GetTransform()->GetWorldMatrix());
+
+		//	// Set texture
+		//	if (particles->GetAppearance()->HasTexture())
+		//	{
+		//		ID3D11ShaderResourceView * textureRV = particles->GetAppearance()->GetTextureRV();
+		//		_pImmediateContext->PSSetShaderResources(0, 1, &textureRV);
+		//		cb.HasTexture = 1.0f;
+		//	}
+		//	else
+		//	{
+		//		cb.HasTexture = 0.0f;
+		//	}
+
+		//	// Update constant buffer
+		//	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+
+		//	// Draw object
+		//	particles->Draw(_pImmediateContext);
+		//}
+	//}
+>>>>>>> parent of efe429b... Fixed particle system and Spin velocity
 	
 
 

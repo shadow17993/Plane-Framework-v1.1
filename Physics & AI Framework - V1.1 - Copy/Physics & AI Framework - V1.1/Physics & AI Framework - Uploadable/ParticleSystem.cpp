@@ -18,14 +18,14 @@ void ParticleSystem::Update(float dt)
 	_transform->Update(dt);
 	//_transform->SetPosition(_transform->getParent()->GetPosition().x, _transform->getParent()->GetPosition().y, _transform->getParent()->GetPosition().z + 13);
 	
-	
+
 	if (particles.size() != 100)
 	{
-		Transform* t = new Transform(nullptr, XMFLOAT3{ _transform->GetPosition().x, _transform->GetPosition().y + 10, _transform->GetPosition().z }, { 0.0f, 0.0f, 0.0f }, { 0.5f, 0.5f, 0.5f });
+		Transform* t = new Transform(nullptr, _transform->GetPosition(), { 0.0f, 0.0f, 0.0f }, {0.5f, 0.5f, 0.5f});
 		ParticleModel* pm = new ParticleModel
 		(
 			t,
-			{ -2.0f + static_cast <float> (rand()) / static_cast <float> (RAND_MAX / (2.0 - -2.0)), 0.0f, -2.0f + static_cast <float> (rand()) / static_cast <float> (RAND_MAX / (2.0 - -2.0)) }, 
+			{ -2.0f + static_cast <float> (rand()) / static_cast <float> (RAND_MAX / (2.0 - -2.0)), -1.0f, -2.0f + static_cast <float> (rand()) / static_cast <float> (RAND_MAX / (2.0 - -2.0)) }, 
 			{ 0.0f, 0.0f, 0.0f }
 		);
 			
@@ -46,9 +46,8 @@ void ParticleSystem::Update(float dt)
 
 void ParticleSystem::Draw(ID3D11DeviceContext * pImmediateContext)
 {
-	/*
 	for (auto particle : particles)
 	{
 		particle->Draw(pImmediateContext);
-	}*/
+	}
 }

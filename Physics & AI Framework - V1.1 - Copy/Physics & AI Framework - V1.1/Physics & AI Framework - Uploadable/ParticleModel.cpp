@@ -94,7 +94,7 @@ ParticleModel::ParticleModel(Transform* transform, XMFLOAT3 velocity, XMFLOAT3 a
 
 	_dragFactor = 1.0f;
 	_forceMag = 0.0f;
-	_mass = 1.0f;
+	_mass = 0.0f;
 
 	_slidingOn = false;
 
@@ -180,9 +180,14 @@ void ParticleModel::MoveConstAcc(float t)
 
 void ParticleModel::MoveConstVel(float t)
 {
-	_transform->SetPosition(_transform->GetPosition().x + _velocity.x * t,
-		_transform->GetPosition().y + _velocity.y * t,
-		_transform->GetPosition().z + _velocity.z * t);
+	XMFLOAT3 prevPosition = _transform->GetPosition();
+
+	XMFLOAT3 position;
+	position.x = prevPosition.x + _velocity.x * t;
+	position.y = prevPosition.y + _velocity.y * t;
+	position.z = prevPosition.z + _velocity.z * t;
+
+	_transform->SetPosition(position);
 }
 
 
@@ -446,13 +451,12 @@ void ParticleModel::UpdateSphere(float t)
 	{
 		if (_slidingOn)
 		{
-			_spinVelocity.x = (_velocity.z * ((XM_PI / 180) * _collisionRadius)) / 1000;
-			_spinVelocity.y = (_velocity.x * ((XM_PI / 180) * _collisionRadius)) / 1000;
-			//_spinVelocity.z = _velocity.y * ((_collisionRadius / 17.425) * (XM_PI / 180));
+			_spinVelocity.x = _velocity.z * ((_collisionRadius / 17.425) * (XM_PI / 180));
+			_spinVelocity.y = _velocity.x * ((_collisionRadius / 17.425) * (XM_PI / 180));
+			_spinVelocity.z = _velocity.y * ((_collisionRadius / 17.425) * (XM_PI / 180));
 		}
 		else if (!_slidingOn)
 		{
-			//if (_spinVelocity.x )
 			_slidingForce.x = 0.0f;
 			_slidingForce.y = _mass * _gravity;
 			_slidingForce.z = 0.0f;
