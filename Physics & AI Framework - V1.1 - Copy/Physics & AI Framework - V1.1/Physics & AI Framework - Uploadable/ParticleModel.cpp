@@ -440,8 +440,6 @@ void ParticleModel::Update(float t)
 
 void ParticleModel::UpdateSphere(float t)
 {
-	
-
 	if (_useConstAcc)
 	{
 		if (_slidingOn)
@@ -449,6 +447,7 @@ void ParticleModel::UpdateSphere(float t)
 			_spinVelocity.x = (_velocity.z * ((XM_PI / 180) * _collisionRadius)) / 1000;
 			_spinVelocity.y = (_velocity.x * ((XM_PI / 180) * _collisionRadius)) / 1000;
 			//_spinVelocity.z = _velocity.y * ((_collisionRadius / 17.425) * (XM_PI / 180));
+			SlidingForce(XMConvertToRadians(_theta), 0.001f);
 		}
 		else if (!_slidingOn)
 		{

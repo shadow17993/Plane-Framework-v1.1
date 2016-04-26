@@ -29,21 +29,6 @@ public:
 
 	// Get/Set Plane Rotation
 	XMFLOAT3 GetPlaneRotation() const { return planeRotation; };
-	void SetPlaneRotation(XMFLOAT3 _planeRotation) 
-	{
-		planeRotation = _planeRotation; 
-		planeRotation.x = planeRotation.x * (XM_PI / 180);
-		planeRotation.y = planeRotation.y * (XM_PI / 180);
-		planeRotation.z = planeRotation.z * (XM_PI / 180);
-		planeBody->GetTransform()->SetRotation(planeRotation.x, planeRotation.y, planeRotation.z);
-	};
-	void AddPlaneRotation(XMFLOAT3 _planeRotation) {
-		planeRotation = _planeRotation; 
-		planeRotation.x = planeRotation.x * (XM_PI / 180);
-		planeRotation.y = planeRotation.y * (XM_PI / 180);
-		planeRotation.z = planeRotation.z * (XM_PI / 180);
-		planeBody->GetTransform()->SetRotation(planeRotation.x, planeRotation.y, planeRotation.z);
-	};
 
 	// Get/Set Plane Rotation Speed
 //	float GetPlaneRotationSpeed() const { return planeRotationSpeed; };

@@ -25,8 +25,8 @@ void ParticleSystem::Update(float dt)
 		ParticleModel* pm = new ParticleModel
 		(
 			t,
-			{ -2.0f + static_cast <float> (rand()) / static_cast <float> (RAND_MAX / (2.0 - -2.0)), 0.0f, -2.0f + static_cast <float> (rand()) / static_cast <float> (RAND_MAX / (2.0 - -2.0)) }, 
-			{ 0.0f, 0.0f, 0.0f }
+			{ -2.0f + static_cast <float> (rand()) / static_cast <float> (RAND_MAX / (2.0 - -2.0)), 0.0f, -2.0f + static_cast <float> (rand()) / static_cast <float> (RAND_MAX / (2.0 - -2.0)) },
+			1.0f, 0.0f
 		);
 			
 		particles.push_back(new Particle(t, pm, _particleApp));

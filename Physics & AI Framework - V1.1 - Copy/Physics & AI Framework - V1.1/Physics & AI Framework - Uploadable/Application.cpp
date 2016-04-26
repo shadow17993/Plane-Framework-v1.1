@@ -261,8 +261,6 @@ void Application::InitObjects()
 	// Cube Point Initialisation
 	Geometry cubeGeometry = OBJLoader::Load("Objects/cube.obj", _pd3dDevice);
 
-	Transform * cubeTransform = new Transform(myPlane->GetPlaneBody()->GetTransform(), planePos);
-
 	Appearance* cubeAppearance = new Appearance(cubeGeometry, shinyMaterial);
 	cubeAppearance->SetTextureRV(_pStoneTex);
 

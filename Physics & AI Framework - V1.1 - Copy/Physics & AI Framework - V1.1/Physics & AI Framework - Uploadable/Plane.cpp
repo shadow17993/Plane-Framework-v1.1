@@ -4,11 +4,8 @@
 Plane::Plane(GameObject* _planeBody)
 {
 	planeBody = _planeBody;
-
 	planePos = planeBody->GetTransform()->GetPosition();
-
 	planeRotation = {0.0f, 0.0f, 0.0f};
-
 	engineSpeedAdd = 0.01f;
 }
 
@@ -117,7 +114,7 @@ void Plane::Input()
 		}
 		else if (planeRotation.x > 0)
 		{
-			planeRotation.x -= 0.0002f;
+			planeRotation.x -= 0.002f;
 		}
 
 		if (planeRotation.x < 0.01f && planeRotation.x > -0.01f)
@@ -130,43 +127,43 @@ void Plane::Input()
 
 	if (GetAsyncKeyState('Q'))
 	{
-		planeRotation.y += 0.00001f;
+		planeRotation.y += 0.00000000001f;
 
 		//planeBodyModel->SetWingLift(planeBodyModel->GetThrust() + planeRotation.y);
 	}
 	else if (GetAsyncKeyState('E'))
 	{
-		planeRotation.y -= 0.00001f;
+		planeRotation.y -= 0.00000000001f;
 
 		//planeBodyModel->SetWingLift(planeBodyModel->GetThrust() - planeRotation.y);
 	}
-	/*else
+	else
 	{
 		if (planeRotation.y < 0)
 		{
-			planeRotation.y += 0.002f;
+			planeRotation.y += 0.00000000002f;
 		}
-		else if (planeRotation.x > 0)
+		else if (planeRotation.y > 0)
 		{
 
-			planeRotation.y -= 0.02f;
+			planeRotation.y -= 0.00000000002f;
 		}
 
 		if (
-			planeRotation.y < 0.01f && planeRotation.y > -0.01f)
+			planeRotation.y < 0.0000000001f && planeRotation.y > -0.0000000001f)
 		{
 
 			planeRotation.y = 0;
 		}
-	}*/
+	}
 }
 
 void Plane::CalculateForwardVector()
 {
-	planeRotation = planeBody->GetTransform()->GetRotation();
+	planeBody->GetTransform()->GetRotation();
 
 	planeForwardVector.x = sin((planeRotation.y / 17.425f) * (XM_PI / 180.0f));
-	planeForwardVector.y = cos((planeRotation.z / 17.425f) * (XM_PI / 180.0f)); // check this
+	planeForwardVector.y = tan((planeRotation.z / 17.425f) * (XM_PI / 180.0f)); // check this 0.0f;
 	planeForwardVector.z = cos((planeRotation.x / 17.425f) * (XM_PI / 180.0f));
 
 	float planeDirectionMag = sqrt((planeForwardVector.x * planeForwardVector.x) + (planeForwardVector.y * planeForwardVector.y) + (planeForwardVector.z * planeForwardVector.z));
@@ -246,10 +243,10 @@ void Plane::Update(float t)
 		planeBody->GetTransform()->SetRotation(0.0f, XMConvertToRadians(180.0f), 0.0f);
 	}*/
 
-	planeBody->GetTransform()->SetRotation(planeRotation.x, planeRotation.y, planeRotation.z);
+	planeBody->GetTransform()->SetRotation(planeRotation.x, XMConvertToRadians(180.0f) + (planeRotation.y * planeRotationSpeed), planeRotation.z);
 
-	planeBodyModel->SetWingLift(planeRotation.x * 2);
-	planeBodyModel->SetYawForce(planeRotation.z * 2);
+	planeBodyModel->SetWingLift(planeRotation.x);
+	planeBodyModel->SetYawForce(planeRotation.z);
 
 	// Update Transform
 	planeBody->Update(t);
