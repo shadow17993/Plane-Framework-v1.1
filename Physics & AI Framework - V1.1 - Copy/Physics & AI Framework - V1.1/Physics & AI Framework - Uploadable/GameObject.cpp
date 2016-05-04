@@ -29,6 +29,14 @@ void GameObject::Update(float t)
 			_particleModel->Update(t);
 		}
 	}
+
+	if (!children.empty())
+	{
+		for each(auto child in children)
+		{
+			child->Update(t);
+		}
+	}
 }
 
 void GameObject::Draw(ID3D11DeviceContext* pImmediateContext)

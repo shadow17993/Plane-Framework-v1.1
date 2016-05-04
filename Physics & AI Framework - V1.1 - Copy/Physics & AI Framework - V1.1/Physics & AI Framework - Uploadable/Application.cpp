@@ -101,7 +101,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         return E_FAIL;
     }
 
-	CreateDDSTextureFromFile(_pd3dDevice, L"Resources\\stone.dds", nullptr, &_pTextureRV);
+	CreateDDSTextureFromFile(_pd3dDevice, L"Resources\\stone.dds", nullptr, &_pStoneTex);
 	CreateDDSTextureFromFile(_pd3dDevice, L"Resources\\CFAPlaneTexture.dds", nullptr, &_pAIPlaneTex);
 	CreateDDSTextureFromFile(_pd3dDevice, L"Resources\\Hercules_COLOR.dds", nullptr, &_pPlaneTex);
 	CreateDDSTextureFromFile(_pd3dDevice, L"Resources\\carTex.dds", nullptr, &_pCarTex);
@@ -109,7 +109,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 	CreateDDSTextureFromFile(_pd3dDevice, L"Resources\\track01.dds", nullptr, &_pRaceTrackTex);
 	CreateDDSTextureFromFile(_pd3dDevice, L"Resources\\grass.dds", nullptr, &_pGrassTex);
 	CreateDDSTextureFromFile(_pd3dDevice, L"Resources\\mountain.dds", nullptr, &_pMountainTex);
-	CreateDDSTextureFromFile(_pd3dDevice, L"Resources\\floor.dds", nullptr, &_pStoneTex);
+	CreateDDSTextureFromFile(_pd3dDevice, L"Resources\\floor.dds", nullptr, &_pTextureRV);
 	CreateDDSTextureFromFile(_pd3dDevice, L"Resources\\skyBox3.dds", nullptr, &_pSkyTex);
 
 	// Setup Camera
@@ -218,6 +218,7 @@ void Application::InitObjects()
 
 	skyBox = new GameObject("Sky Box", appearance, transform, particleModel, false);
 
+	sphereGeometry = OBJLoader::Load("Objects/sphere.obj", _pd3dDevice);
 
 	// Init Plane collection Objects
 	InitPlaneObjects();
@@ -226,37 +227,17 @@ void Application::InitObjects()
 
 
 	// Sphere Initialisation
-	sphereGeometry = OBJLoader::Load("Objects/sphere.obj", _pd3dDevice);
-
 	Appearance* sphereAppearance = new Appearance(sphereGeometry, shinyMaterial);
-	appearance->SetTextureRV(_pTextureRV);
+	sphereAppearance->SetTextureRV(_pTextureRV);
 
 	transform = new Transform();
-	transform->SetPosition(planePos.x + 100, 30.0f, planePos.z + 50.0f);
+	transform->SetPosition(planePos.x/* + 30.0f*/, 30.0f, planePos.z + 40.0f);
 	transform->SetScale(10.0f, 10.0f, 10.0f);
 	transform->SetRotation(0.0f, 0.0f, 0.0f);
 
 	particleModel = new ParticleModel(transform, XMFLOAT3{0.0f, 0.0f, 0.0f}, 1.0f, 8.0f);
 
 	sphere = new GameObject("Sphere", sphereAppearance, transform, particleModel, true);
-
-
-
-	// Particle System Initialisation
-	Transform * psTransform = new Transform(myPlane->GetPlaneBody()->GetTransform(), planePos);
-
-	sphereAppearance = new Appearance(sphereGeometry, shinyMaterial);
-	appearance->SetTextureRV(_pStoneTex);
-
-	ParticleSystem*_ps = new ParticleSystem(psTransform, { 8.0f, 0.0f, 10.0f }, sphereAppearance);
-
-	particleSystems.push_back(_ps);
-
-	psTransform = new Transform(myPlane->GetPlaneBody()->GetTransform(), planePos);
-	_ps = new ParticleSystem(psTransform, { -8.0f, 0.0f, 10.0f }, sphereAppearance);
-
-	particleSystems.push_back(_ps);
-
 
 	// Cube Point Initialisation
 	Geometry cubeGeometry = OBJLoader::Load("Objects/cube.obj", _pd3dDevice);
@@ -265,6 +246,17 @@ void Application::InitObjects()
 	cubeAppearance->SetTextureRV(_pStoneTex);
 
 	_cp = new CubePoint(cubeAppearance);
+
+
+	// Cube Initialisation
+	transform = new Transform();
+	transform->SetPosition(planePos.x, 10.0f, planePos.z + 100.0f);
+	transform->SetScale(10.0f, 10.0f, 10.0f);
+	transform->SetRotation(0.0f, 0.0f, 0.0f);
+
+	particleModel = new ParticleModel(transform, { 0.0f, 0.001f, 0.0f }, { 0.0f, 0.001f, 0.0f }, 30.0f);
+
+	cube = new Cube(transform, particleModel, cubeAppearance);
 
 
 	// Camera
@@ -342,6 +334,26 @@ void Application::InitPlaneObjects()
 	particleModel->SetCollisionRadius(10.0f);
 
 	GameObject* planeBody = new GameObject("Plane", appearance, transform, particleModel, false);
+
+
+	// Particle System Initialisation
+	Transform * psTransform = new Transform(planeBody->GetTransform(), planePos);
+
+	Appearance* sphereAppearance = new Appearance(sphereGeometry, shinyMaterial);
+	appearance->SetTextureRV(_pStoneTex);
+
+	ParticleSystem*_ps1 = new ParticleSystem(psTransform, { -8.0f, -8.0f, -2.0f }, sphereAppearance);
+
+	
+	psTransform = new Transform(planeBody->GetTransform(), planePos);
+
+	sphereAppearance = new Appearance(sphereGeometry, shinyMaterial);
+	appearance->SetTextureRV(_pStoneTex);
+
+	ParticleSystem* _ps2 = new ParticleSystem(psTransform, { 8.0f, -8.0f, -2.0f }, sphereAppearance);
+
+	planeBody->AddChild(_ps1);
+	planeBody->AddChild(_ps2);
 
 	myPlane = new Plane(planeBody);
 }
@@ -999,6 +1011,11 @@ void Application::Update(float t)
 		myPlane->GetPlaneBody()->GetParticleModel()->ResolveSphereCollision(sphere->GetParticleModel());
 	}
 
+	if (myPlane->GetPlaneBody()->GetParticleModel()->CollisionCheck(cube->GetTransform()->GetPosition(), cube->GetParticleModel()->GetCollisionRadius()))
+	{
+		cube->GetParticleModel()->IsConstSpinVel(false);
+	}
+
 	// Update Ground Plane
 	groundPlane->Update(t);
 
@@ -1021,6 +1038,13 @@ void Application::Update(float t)
 	for (auto ps : particleSystems)
 	{
 		ps->Update(t);
+	}
+	for (auto cube : _cp->getCubes())
+	{
+		if (myPlane->GetPlaneBody()->GetParticleModel()->CollisionCheck(cube->GetTransform()->GetPosition(), cube->GetParticleModel()->GetCollisionRadius()))
+		{
+			cube->GetParticleModel()->IsConstSpinVel(false);
+		}
 	}
 
 	_cp->Update(t);
@@ -1265,12 +1289,12 @@ void Application::Draw()
 
 
 	// --------------- Draw Particles ---------------- //
-	for (auto ps : particleSystems)
+	for (auto ps : planeBody->GetChildren())
 	{
 		for (auto particles : ps->getParticles())
 		{
 			// Get render material
-			Material material = particles->GetAppearance()->GetMaterial();
+			material = particles->GetAppearance()->GetMaterial();
 
 			// Copy material to shader
 			cb.surface.AmbientMtrl = material.ambient;
@@ -1300,10 +1324,11 @@ void Application::Draw()
 		}
 	}
 
+	// ----------------- Draw Cubes in CubePoint ------------------ //
 	for (auto cubes : _cp->getCubes())
 	{
 		// Get render material
-		Material material = cubes->GetAppearance()->GetMaterial();
+		material = cubes->GetAppearance()->GetMaterial();
 
 		// Copy material to shader
 		cb.surface.AmbientMtrl = material.ambient;
@@ -1331,8 +1356,36 @@ void Application::Draw()
 		// Draw object
 		cubes->Draw(_pImmediateContext);
 	}
-	
 
+	// ----------------- Draw Cube ------------------ //
+	// Get render material
+	material = cube->GetAppearance()->GetMaterial();
+
+	// Copy material to shader
+	cb.surface.AmbientMtrl = material.ambient;
+	cb.surface.DiffuseMtrl = material.diffuse;
+	cb.surface.SpecularMtrl = material.specular;
+
+	// Set world matrix
+	cb.World = XMMatrixTranspose(cube->GetTransform()->GetWorldMatrix());
+
+	// Set texture
+	if (cube->GetAppearance()->HasTexture())
+	{
+		ID3D11ShaderResourceView * textureRV = cube->GetAppearance()->GetTextureRV();
+		_pImmediateContext->PSSetShaderResources(0, 1, &textureRV);
+		cb.HasTexture = 1.0f;
+	}
+	else
+	{
+		cb.HasTexture = 0.0f;
+	}
+
+	// Update constant buffer
+	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+
+	// Draw object
+	cube->Draw(_pImmediateContext);
 
     // Present our back buffer to our front buffer
     _pSwapChain->Present(0, 0);

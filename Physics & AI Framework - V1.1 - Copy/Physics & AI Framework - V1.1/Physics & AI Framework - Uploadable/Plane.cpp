@@ -96,13 +96,13 @@ void Plane::Input()
 
 	if (GetAsyncKeyState('W'))
 	{
-		planeRotation.x += 0.001f;
+		planeRotation.x += 0.01f;
 
 		planeBodyModel->SetWingLift(planeBodyModel->GetThrust() + planeRotation.z);
 	}
 	else if (GetAsyncKeyState('S'))
 	{
-		planeRotation.x -= 0.001f;
+		planeRotation.x -= 0.01f;
 
 		planeBodyModel->SetWingLift(planeBodyModel->GetThrust() - planeRotation.z);
 	}
@@ -110,11 +110,11 @@ void Plane::Input()
 	{
 		if (planeRotation.x < 0)
 		{
-			planeRotation.x += 0.0002f;
+			planeRotation.x += 0.002f;
 		}
 		else if (planeRotation.x > 0)
 		{
-			planeRotation.x -= 0.002f;
+			planeRotation.x -= 0.02f;
 		}
 
 		if (planeRotation.x < 0.01f && planeRotation.x > -0.01f)
@@ -163,8 +163,8 @@ void Plane::CalculateForwardVector()
 	planeBody->GetTransform()->GetRotation();
 
 	planeForwardVector.x = sin((planeRotation.y / 17.425f) * (XM_PI / 180.0f));
-	planeForwardVector.y = tan((planeRotation.z / 17.425f) * (XM_PI / 180.0f)); // check this 0.0f;
-	planeForwardVector.z = cos((planeRotation.x / 17.425f) * (XM_PI / 180.0f));
+	planeForwardVector.y = cos((planeRotation.z / 17.425f) * (XM_PI / 180.0f)); // check this;
+	planeForwardVector.z = cos((planeRotation.y / 17.425f) * (XM_PI / 180.0f));
 
 	float planeDirectionMag = sqrt((planeForwardVector.x * planeForwardVector.x) + (planeForwardVector.y * planeForwardVector.y) + (planeForwardVector.z * planeForwardVector.z));
 	planeForwardVector = XMFLOAT3((planeForwardVector.x / planeDirectionMag), (planeForwardVector.y / planeDirectionMag), (planeForwardVector.z / planeDirectionMag));
@@ -234,14 +234,7 @@ void Plane::Update(float t)
 	if (floorPos.y >= planePos.y)
 	{
 		planeBodyModel->BaseCollisionCheck(floorPos);
-		planeBody->GetTransform()->SetPosition(planeBody->GetTransform()->GetPosition().x, 0.01f, planeBody->GetTransform()->GetPosition().z);
-		/*planeBody->GetTransform()->SetRotation(0.0f, XMConvertToRadians(180.0f), 0.0f);*/
 	}
-	/*else if (floorPos.y = planePos.y)
-	{
-		planeBody->GetTransform()->SetPosition(planeBody->GetTransform()->GetPosition().x, 0.0f, planeBody->GetTransform()->GetPosition().z);
-		planeBody->GetTransform()->SetRotation(0.0f, XMConvertToRadians(180.0f), 0.0f);
-	}*/
 
 	planeBody->GetTransform()->SetRotation(planeRotation.x, XMConvertToRadians(180.0f) + (planeRotation.y * planeRotationSpeed), planeRotation.z);
 

@@ -4,6 +4,7 @@
 
 CubePoint::CubePoint( Appearance* appearance) : _particleApp(appearance)
 {
+	_score = 0;
 }
 
 
@@ -17,8 +18,10 @@ void CubePoint::Update(float t)
 	{
 		Transform* t = new Transform(
 			nullptr, 
-			XMFLOAT3{ -1000.0f + static_cast <float> (rand()) / static_cast <float> (RAND_MAX / (1000.0 - -1000.0)), 100.0f, -1000.0f + static_cast <float> (rand()) / static_cast <float> (RAND_MAX / (1000.0 - -1000.0)) }, { 0.0f, 0.0f, 0.0f }, { 10.0f, 10.0f, 10.0f });
-		ParticleModel* pm = new ParticleModel(t, { 0.0f, 0.5f, 0.0f }, { 0.0f, 0.0f, 0.0f }, 20.0f);
+			XMFLOAT3{ -1000.0f + static_cast <float> (rand()) / static_cast <float> (RAND_MAX / (1000.0 - -1000.0)), 100.0f, -1000.0f + static_cast <float> (rand()) / static_cast <float> (RAND_MAX / (1000.0 - -1000.0)) }, 
+			{ 0.0f, 0.0f, 0.0f }, 
+			{ 10.0f, 10.0f, 10.0f });
+		ParticleModel* pm = new ParticleModel(t, { 0.0f, 0.001f, 0.0f }, { 0.0f, 0.001f, 0.0f }, 20.0f);
 
 		_cubes.push_back(new Cube(t, pm, _particleApp));
 	}
@@ -30,7 +33,10 @@ void CubePoint::Update(float t)
 		// Erases particle if energy is 0;
 		if (_cubes.at(i)->GetParticleModel()->getSpinVel().y > 2.0f)
 		{
-			_cubes.erase(_cubes.begin() + i);
+			_cubes.at(i)->GetTransform()->SetPosition({ -1000.0f + static_cast <float> (rand()) / static_cast <float> (RAND_MAX / (1000.0 - -1000.0)), 100.0f, -1000.0f + static_cast <float> (rand()) / static_cast <float> (RAND_MAX / (1000.0 - -1000.0)) });
+			_cubes.at(i)->GetParticleModel()->IsConstSpinVel(true);
+			_cubes.at(i)->GetParticleModel()->setSpinVel({ 0.0f, 0.1f, 0.0f });
+			_score++;
 		}
 	}
 }

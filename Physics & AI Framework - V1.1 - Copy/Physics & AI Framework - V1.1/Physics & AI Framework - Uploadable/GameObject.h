@@ -7,6 +7,7 @@
 
 #include "Appearance.h"
 #include "ParticleModel.h"
+#include "ParticleSystem.h"
 
 using namespace DirectX;
 using namespace std;
@@ -26,6 +27,9 @@ public:
 	void Update(float t);
 	void Draw(ID3D11DeviceContext* pImmediateContext);
 
+	void AddChild(ParticleSystem* child) { children.push_back(child); child->getTransform()->SetParent(_transform); };
+	vector < ParticleSystem* > GetChildren() { return children; };
+
 private:
 	string _type;
 
@@ -34,5 +38,5 @@ private:
 	ParticleModel* _particleModel;
 
 	bool _isMoving;
-
+	vector< ParticleSystem* > children;
 };

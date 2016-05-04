@@ -40,6 +40,8 @@ Transform::~Transform()
 
 void Transform::Update(float t)
 {
+	_parent = getParent();
+
 	// Calculate world matrix
 	XMMATRIX scale = XMMatrixScaling(_scale.x, _scale.y, _scale.z);
 	XMMATRIX rotation = XMMatrixRotationX(_rotation.x) * XMMatrixRotationY(_rotation.y) * XMMatrixRotationZ(_rotation.z);

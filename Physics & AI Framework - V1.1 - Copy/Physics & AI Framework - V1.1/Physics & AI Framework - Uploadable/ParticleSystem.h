@@ -7,7 +7,6 @@
 #include <directxcolors.h>
 #include "Particle.h"
 #include <vector>
-#include "GameObject.h"
 
 using namespace DirectX;
 using namespace std;
@@ -28,9 +27,8 @@ public:
 private:
 
 	vector<Particle*> particles;
-
-	Transform* _transform;
 	XMFLOAT3 _offsetPos;
+	Transform* _transform;
 	Appearance* _particleApp;
 };
 

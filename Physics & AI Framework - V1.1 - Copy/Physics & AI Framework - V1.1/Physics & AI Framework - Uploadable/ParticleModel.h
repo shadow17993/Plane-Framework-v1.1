@@ -82,6 +82,8 @@ public:
 
 	void SetTheta(float theta) { _theta = theta; }
 
+	void IsConstSpinVel(bool isConstSpinVel) { _useSpinConstVel = isConstSpinVel; }
+
 protected:
 	Transform* _transform;
 

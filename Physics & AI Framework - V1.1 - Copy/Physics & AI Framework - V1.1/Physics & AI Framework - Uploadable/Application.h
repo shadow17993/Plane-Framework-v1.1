@@ -108,6 +108,8 @@ private:
 	GameObject* skyBox;
 	GameObject* sphere;
 
+	Cube* cube;
+
 	// Waypoints
 	CubePoint* _cp;
 
